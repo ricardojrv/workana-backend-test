@@ -2,12 +2,11 @@
   "name": "workana-test",
   "version": "1.0.0",
   "description": "",
-  "main": "src/app.js",
+  "main": "dist/app.js",
   "scripts": {
-    "build": "npx tsc",
+    "build": "tsc",
     "start": "node dist/app.js",
-    "dev": "nodemon src/app.ts",
-    "prepare": "husky install"
+    "dev": "nodemon src/app.ts"
   },
   "husky": {
     "hooks": {

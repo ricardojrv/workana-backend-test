@@ -1,6 +1,5 @@
-FROM node:20-slim AS base
+FROM node:20-slim
 
-FROM node:latest
 WORKDIR /app
 COPY package*.json ./
 RUN npm install

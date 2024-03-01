@@ -6,6 +6,7 @@ import errorHandling from './middlewares/errorHandling';
 import { AppDataSource } from './db/dataSource'
 import { createClient } from 'redis';
 import logger from './library/logger/logger';
+
 dotenv.config();
 
 const app = express();
