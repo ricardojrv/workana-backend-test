@@ -1,31 +1,25 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import helmet from "helmet";
+import './db/redis'
 import { routes } from './routes';
 import errorHandling from './middlewares/errorHandling';
 import { AppDataSource } from './db/dataSource'
-import { createClient } from 'redis';
 import logger from './library/logger/logger';
+import verifyToken from './middlewares/verifyToken';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const redisClient = createClient();
-
-redisClient.on('error', (err) => {
-  logger.error('Redis connection error:', err);
-});
-
-redisClient.connect().then(() => {
-  logger.info('Connected to Redis successfully');
-});
-
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(helmet());
 app.use(errorHandling);
+app.use(verifyToken)
 app.use('/', routes);
 
 
