@@ -1,0 +1,26 @@
+# Build artifacts
+node_modules/
+dist/
+build/
+coverage/
+
+# IDE and editor specific files
+.vscode/
+
+# Temporary runtime data
+npm-debug.log
+yarn-error.log
+
+# Testing environment and generated files
+test.log
+test-results.xml
+tests/integration/*.csv
+!tests/integration/expected/*.csv  # Keep expected integration test data
+
+# Environment variables
+.env
+
+# Miscellaneous temporary files
+*.log
+*.pid
+*.lock
