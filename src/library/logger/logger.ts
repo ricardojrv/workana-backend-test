@@ -28,19 +28,17 @@ const formatter = format.combine(
   format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   format.splat(),
   format.printf((info) => {
-    const { timestamp, level, message, ...meta } = info;
+    const { timestamp, level, message, meta } = info;
 
-    return `${timestamp} [${level}]: ${message} ${
-      Object.keys(meta).length ? JSON.stringify(meta, null, 2) : ''
-    }`;
+    return `${timestamp} [${level}]: ${message} ${meta ? JSON.stringify(meta) : ''
+      }`;
   }),
 );
 
 
 const logger = winston.createLogger({
-  level: isDevEnvironment() ? 'trace' : 'error',
-  levels: customLevels.levels,
-  transports: [isDevEnvironment() ? new winston.transports.Console({ format: formatter }) : new winston.transports.File({ filename: 'logs/error.log', level: 'error' })],
+  transports: [new winston.transports.Console()],
+  format: formatter
 });
 
 winston.addColors(customLevels.colors);

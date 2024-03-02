@@ -11,9 +11,10 @@ import { Request } from 'express';
 
 declare module 'express-serve-static-core' {
   interface Request {
-    userId?: string; // Assuming userId is a string
-    tokenExp?: number; // Assuming tokenExp is a number (timestamp)
-    token?: string; // The JWT token
+    userId?: string;
+    tokenExp?: number;
+    token?: string;
+    time?: string
   }
 }
 

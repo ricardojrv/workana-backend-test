@@ -15,6 +15,7 @@ export const fetchFabric = async (req: Request, res: Response, next: NextFunctio
 
 export const createFabric = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    console.log(req.body);
     const newFabric = await service.createFabric(req.body);
     res.status(201).json(newFabric);
   } catch (error) {
@@ -24,8 +25,8 @@ export const createFabric = async (req: Request, res: Response, next: NextFuncti
 
 export const updateFabric = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { IdFab } = req.params;
-    const fabric = await service.updateFabric(Number(IdFab), req.body);
+    const { id } = req.params;
+    const fabric = await service.updateFabric(Number(id), req.body);
     if (fabric) {
       res.json(fabric);
     } else {
@@ -38,8 +39,8 @@ export const updateFabric = async (req: Request, res: Response, next: NextFuncti
 
 export const deleteFabric = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { IdFab } = req.params;
-    await service.deleteFabric(Number(IdFab));
+    const { id } = req.params;
+    await service.deleteFabric(Number(id));
     res.status(204).send();
   } catch (error) {
     next(error);

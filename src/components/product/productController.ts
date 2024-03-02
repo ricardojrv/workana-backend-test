@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import * as ProductService from './productService'; // Adjust the import path as necessary
 
-export const getAllProducts = async (req: Request, res: Response, next: NextFunction) => {
+export const getAllProductsByFabId = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const products = await ProductService.findAllProducts();
+    const { fabId } = req.params;
+    const products = await ProductService.findAllProductsByFabId(fabId);
     res.json(products);
   } catch (error) {
     next(error);

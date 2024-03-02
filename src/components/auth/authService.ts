@@ -4,6 +4,7 @@ import { BadRequestError, UnauthorizedError } from '../../library/error/apiError
 import bcrypt from 'bcrypt';
 import validator from 'validator';
 import jwt from '../../library/jwt/jwt';
+import validatePasswordStrength from '../../library/helpers/validatePassword';
 
 const userRepository = AppDataSource.getRepository(User);
 
@@ -21,11 +22,9 @@ const signIn = async (email: string, password: string): Promise<boolean> => {
     throw new BadRequestError('Invalid email format.');
   }
 
-  const isStrongPassword = validator.isStrongPassword(password, {
-    minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1
-  });
-  if (!isStrongPassword) {
-    throw new BadRequestError('Password does not meet strength requirements.');
+  const passwordErrorMessage = validatePasswordStrength(password);
+  if (passwordErrorMessage) {
+    throw new BadRequestError(passwordErrorMessage);
   }
 
   const dbUser = await userRepository.findOneBy({ email });
@@ -42,8 +41,8 @@ const signIn = async (email: string, password: string): Promise<boolean> => {
   return true;
 };
 
-const login = async (email:string, password:string) => {
-if (!validator.isEmail(email) || !password) {
+const login = async (email: string, password: string) => {
+  if (!validator.isEmail(email) || !password) {
     throw new BadRequestError('Invalid email or password');
   }
 
@@ -68,4 +67,4 @@ const logout = async () => {
   return true;
 };
 
-export default{ signIn, login, logout };
+export default { signIn, login, logout };
