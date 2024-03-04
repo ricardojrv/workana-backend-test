@@ -1,3 +1,5 @@
+npm test
+
 eslint . --fix
 if [ $? -ne 0 ]; then
   echo "Lint errors detected. Please fix them before committing."
