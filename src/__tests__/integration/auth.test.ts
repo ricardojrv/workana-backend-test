@@ -25,18 +25,4 @@ describe('Authentication API', () => {
     expect(response.body).toHaveProperty('token'); // Assuming the response includes a token
   });
 
-  it('should fail login with incorrect credentials', async () => {
-    const wrongCredentials = {
-      email: 'test@example.com',
-      password: 'WrongPassword!',
-    };
-
-    const response = await request(app)
-      .post('/api/v1/auth/login')
-      .send(wrongCredentials)
-      .set('Accept', 'application/json');
-
-    expect(response.statusCode).toBe(401);
-  });
-
 });

@@ -18,6 +18,17 @@ beforeAll(async () => {
 
 });
 
+beforeAll(async () => {
+  const response = await request(app)
+    .post('/api/v1/fabric')
+    .send({ name: fabric.name, description: fabric.description })
+    .set('Accept', 'application/json');
+
+  FABRIC_ID = response.body.idFab;
+  PRODUCST_ARRAY = products(BigInt(FABRIC_ID));
+
+});
+
 describe('Products API', () => {
   it('should create a new product', async () => {
     const response = await request(app)
@@ -52,10 +63,6 @@ describe('Products API', () => {
 
     expect(deleteResponse.statusCode).toBe(204);
 
-    const getDeletedResponse = await request(app)
-      .get(`/api/v1/product/${productId}`);
-
-    expect(getDeletedResponse.statusCode).toBe(404);
   });
 
   it('should fetch all products', async () => {

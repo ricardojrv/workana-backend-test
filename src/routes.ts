@@ -1,6 +1,6 @@
 import express from 'express';
-import  fabricRouter  from  './components/fabric/fabricRouter';
-import  productRouter  from  './components/product/productRouter';
+import fabricRouter from './components/fabric/fabricRouter';
+import productRouter from './components/product/productRouter';
 import authRouter from './components/auth/authRouter';
 
 

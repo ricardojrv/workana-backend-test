@@ -13,6 +13,7 @@ const signIn = async (req: Request, res: Response, next: NextFunction) => {
 
 const login = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
+
   try {
     const user = await authService.login(email, password);
     res.json(user);

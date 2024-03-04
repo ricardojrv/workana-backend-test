@@ -54,10 +54,12 @@ const login = async (email: string, password: string): Promise<{
       email,
     },
   });
-  const parsedUser = parseBigInt(user);
-  if (!parsedUser) {
-    throw new UnauthorizedError('Authentication failed');
+
+  if (!user) {
+    throw new UnauthorizedError('Authentication failed, Wrong Password or Email');
   }
+
+  const parsedUser = parseBigInt(user);
 
   const passwordMatch = await bcrypt.compare(password, parsedUser.password);
   if (!passwordMatch) {
