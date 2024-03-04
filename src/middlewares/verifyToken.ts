@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from '../library/jwt/jwt';
-import { ForbiddenError } from '../library/error/apiErrors';
 import { PUBLIC_ROUTES } from '../config/consts';
 import Redis from '../library/redis/redis';
 

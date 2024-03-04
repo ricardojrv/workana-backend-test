@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import errorHandler from '../library/error/errorHandler';
 import { BaseError } from '../library/error/baseError';
 import logger from '../library/logger/logger';
@@ -7,7 +7,6 @@ const errorHandling = (
   error: BaseError,
   req: Request,
   res: Response,
-  next: NextFunction,
 ) => {
   const isTrusted = errorHandler.isTrustedError(error);
   if (!isTrusted) {

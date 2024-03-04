@@ -8,6 +8,7 @@
     "start": "node dist/server.js",
     "dev": "nodemon src/server.ts",
     "test": "NODE_ENV='test' jest --collect-coverage",
+    "lint:fix": "npx eslint . --fix",
     "prepare": "husky"
   },
   "husky": {

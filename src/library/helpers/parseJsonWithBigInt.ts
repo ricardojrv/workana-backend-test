@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const parseBigInt = (item: any) => JSON.parse(
   JSON.stringify(item, (_key, value) => typeof value === 'bigint' ? String(value) : value),
   (_key, value) => {
