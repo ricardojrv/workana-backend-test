@@ -28,12 +28,12 @@ const blacklistToken = async (userId: string, token: string, tokenExp: number) =
       const parsedData = JSON.parse(data);
       parsedData[userId].push(token);
 
-      await Redis.setEx(userId, tokenExp, JSON.stringify(parsedData));
+      await Redis.setex(userId, tokenExp, JSON.stringify(parsedData));
     } else {
       const blacklistData = {
         [userId]: [token],
       };
-      await Redis.setEx(userId, tokenExp, JSON.stringify(blacklistData));
+      await Redis.setex(userId, tokenExp, JSON.stringify(blacklistData));
     }
   } catch (error) {
     throw new Error(error.message);

@@ -1,8 +1,14 @@
-import { RedisClientType, createClient } from 'redis';
+import Redis from 'ioredis'
 import logger from '../logger/logger';
 
-const client = createClient();
+const redisClient = new Redis({
+  port: parseInt(process.env.REDIS_PORT, 10),
+  host: process.env.REDIS_HOST,
+});
 
-client.on('error', err => logger.error('Redis Client Error', err));
+redisClient.on('error', err => logger.error('Redis Client Error', err));
+redisClient.on('connect', function () {
+  console.log('connected');
+});
 
-export default client;
+export default redisClient;

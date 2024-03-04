@@ -5,7 +5,7 @@ import { Product } from '@prisma/client';
 import parseBigInt from '../../library/helpers/parseJsonWithBigInt';
 
 let FABRIC_ID: number;
-let productsArray: Partial<Product>[];
+let PRODUCST_ARRAY: Partial<Product>[];
 
 beforeAll(async () => {
   const response = await request(app)
@@ -14,16 +14,15 @@ beforeAll(async () => {
     .set('Accept', 'application/json');
 
   FABRIC_ID = response.body.idFab;
-  productsArray = products(BigInt(FABRIC_ID));
+  PRODUCST_ARRAY = products(BigInt(FABRIC_ID));
 
-  console.log(FABRIC_ID, productsArray, "==========================================");
 });
 
 describe('Products API', () => {
   it('should create a new product', async () => {
     const response = await request(app)
       .post('/api/v1/product')
-      .send(parseBigInt(productsArray[0]));
+      .send(parseBigInt(PRODUCST_ARRAY[0]));
     expect(response.statusCode).toBe(201);
 
   });
@@ -31,7 +30,7 @@ describe('Products API', () => {
   it('should update a product', async () => {
     const response = await request(app)
       .post('/api/v1/product')
-      .send(parseBigInt(productsArray[1]));
+      .send(parseBigInt(PRODUCST_ARRAY[1]));
 
     const updateResponse = await request(app)
       .put(`/api/v1/product/${response.body.id}`)
@@ -44,7 +43,7 @@ describe('Products API', () => {
   it('should delete a product', async () => {
     const response = await request(app)
       .post('/api/v1/product')
-      .send(parseBigInt(productsArray[0]));
+      .send(parseBigInt(PRODUCST_ARRAY[0]));
 
     const productId = response.body.id;
 
@@ -60,7 +59,7 @@ describe('Products API', () => {
   });
 
   it('should fetch all products', async () => {
-    await Promise.all(productsArray.map(item => request(app).post('/api/v1/product').send(parseBigInt(item))));
+    await Promise.all(PRODUCST_ARRAY.map(item => request(app).post('/api/v1/product').send(parseBigInt(item))));
 
     const response = await request(app).get(`/api/v1/product/fabric/${FABRIC_ID}`);
     expect(response.statusCode).toBe(200);

@@ -71,7 +71,6 @@ const login = async (email: string, password: string): Promise<{
 };
 
 const logout = async ({ userId, token, tokenExp }: Partial<Request>) => {
-  console.log(userId, token, tokenExp);
   await jwt.blacklistToken(userId, token, tokenExp);
 
   return true;

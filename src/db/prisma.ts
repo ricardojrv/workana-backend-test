@@ -1,31 +1,26 @@
-import { Pool } from 'pg';
-import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
+import logger from '../library/logger/logger';
 
-const BD_URL = `postgresql://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_DATABASE}`;
-
-const pool = new Pool({ connectionString: BD_URL });
-const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({
-  adapter, log: [
+  log: [
     { level: 'warn', emit: 'event' },
     { level: 'info', emit: 'event' },
     { level: 'error', emit: 'event' },
-  ], datasourceUrl: BD_URL,
+  ], datasourceUrl: process.env.DATABASE_URL,
 });
 
 
 
 prisma.$on('warn', (e) => {
-  console.log(e);
+  logger.warn(e.message, e.target);
 });
 
 prisma.$on('info', (e) => {
-  console.log(e);
+  logger.info(e.message, e.target);
 });
 
 prisma.$on('error', (e) => {
-  console.log(e);
+  logger.error(e.message, e.target);
 });
 
 export default prisma;
