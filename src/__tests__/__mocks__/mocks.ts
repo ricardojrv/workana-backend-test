@@ -1,5 +1,5 @@
 import { Fabric, Product } from '@prisma/client';
-import { faker } from '@faker-js/faker'
+import { faker } from '@faker-js/faker';
 
 export const fabric: Partial<Fabric> = {
   idFab: BigInt(1),

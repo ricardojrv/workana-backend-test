@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-object-injection */
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { UnauthorizedError } from '../error/apiErrors';
 import Redis from '../redis/redis';

@@ -1,7 +1,6 @@
 
 import { BaseError } from './baseError';
 export enum HttpStatusCode {
-  OK = 200,
   BAD_REQUEST = 400,
   UNAUTHORIZED = 401,
   FORBIDDEN = 403,
@@ -24,17 +23,17 @@ export class BadRequestError extends BaseError {
 
 export class UnauthorizedError extends BaseError {
   constructor(description: string = 'Unauthorized') {
-    super('UNAUTHORIZED', HttpStatusCode.UNAUTHORIZED, false, description);
+    super('UNAUTHORIZED', HttpStatusCode.UNAUTHORIZED, true, description);
   }
 }
 
 export class ForbiddenError extends BaseError {
   constructor(description: string = 'Forbidden') {
-    super('FORBIDDEN', HttpStatusCode.FORBIDDEN, false, description);
+    super('FORBIDDEN', HttpStatusCode.FORBIDDEN, true, description);
   }
 }
 export class InternalServerError extends BaseError {
   constructor(description: string = 'Internal server error') {
-    super('INTERNAL_SERVER', HttpStatusCode.INTERNAL_SERVER, false, description);
+    super('INTERNAL_SERVER', HttpStatusCode.INTERNAL_SERVER, true, description);
   }
 }

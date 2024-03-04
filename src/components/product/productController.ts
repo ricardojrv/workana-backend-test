@@ -44,7 +44,8 @@ export const deleteProduct = async (req: Request, res: Response, next: NextFunct
   try {
     const { id } = req.params;
     await ProductService.deleteProduct(id);
-    res.status(204).send();
+
+    res.status(204).send({ message: 'product deleted' });
   } catch (error) {
     next(error);
   }

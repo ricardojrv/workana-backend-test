@@ -61,15 +61,17 @@ export const updateProduct = async (id: string, productData: Partial<Product>): 
   return parseBigInt(product);
 };
 
-export const deleteProduct = async (id: string): Promise<Product> => {
+export const deleteProduct = async (id: string): Promise<boolean> => {
   if (!id) throw new BadRequestError('Invalid product id');
 
-  const product = await prisma.product.findUnique({ where: { id: Number(id) } });
-  if (!product) throw new NotFoundError('Invalid product id');
+  const product = await prisma.product.findUnique({ where: { id: BigInt(id) } });
 
-  return prisma.product.delete({
+  if (!product) throw new NotFoundError('Invalid product id');
+  await prisma.product.delete({
     where: {
-      id: Number(id),
+      id: BigInt(id),
     },
   });
+
+  return true;
 };
