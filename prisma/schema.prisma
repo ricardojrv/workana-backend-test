@@ -1,0 +1,32 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+  binaryTargets   = ["native", "debian-openssl-1.1.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       BigInt @id @default(autoincrement())
+  email    String @unique
+  password String
+}
+
+model Fabric {
+  idFab       BigInt    @id @default(autoincrement())
+  name        String
+  description String
+  products    Product[]
+}
+
+model Product {
+  id          BigInt @id @default(autoincrement())
+  description String @db.Text
+  price       Float  @db.DoublePrecision
+  existency   BigInt
+  fabricId    BigInt
+  fabric      Fabric @relation(fields: [fabricId], references: [idFab])
+}

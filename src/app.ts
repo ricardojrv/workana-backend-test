@@ -1,4 +1,4 @@
-import helmet from "helmet";
+import helmet from 'helmet';
 import express from 'express';
 import cors from 'cors';
 import { routes } from './routes';
@@ -12,13 +12,13 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
-app.use(cors())
+app.use(cors());
 
-app.use(loggerMiddleware)
+app.use(loggerMiddleware);
 
-app.use(verifyToken)
+app.use(verifyToken);
 
 app.use('/', routes);
 app.use(errorHandling);
 
-export default app
+export default app;

@@ -9,16 +9,15 @@ const errorHandling = (
   res: Response,
   next: NextFunction,
 ) => {
-  console.log('errorHandling')
   const isTrusted = errorHandler.isTrustedError(error);
   if (!isTrusted) {
-    logger.error(error.message)
+    logger.error(error.message);
   }
   errorHandler.handleError(error);
   res.status(error.httpCode).json({
     status: error.httpCode,
     error: error.message,
-    stack: process.env.NODE_ENV === 'development' ? error.stack : {}
+    stack: process.env.NODE_ENV === 'development' ? error.stack : {},
   });
 };
 

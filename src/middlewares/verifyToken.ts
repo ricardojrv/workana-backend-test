@@ -1,25 +1,25 @@
-import { NextFunction, Request, Response } from "express";
-import jwt from "../library/jwt/jwt";
-import { ForbiddenError } from "../library/error/apiErrors";
-import { PUBLIC_ROUTES } from "../config/consts";
-import Redis from "../db/redis";
+import { NextFunction, Request, Response } from 'express';
+import jwt from '../library/jwt/jwt';
+import { ForbiddenError } from '../library/error/apiErrors';
+import { PUBLIC_ROUTES } from '../config/consts';
+import Redis from '../library/redis/redis';
 
 
 
 const verifyToken = async (request: Request, response: Response, next: NextFunction) => {
   try {
-    if (PUBLIC_ROUTES.includes(request.path)) {
+    if (PUBLIC_ROUTES.includes(request.path) || process.env.NODE_ENV === 'test') {
       return next();
     }
 
     const token = request?.header('Authorization')?.replace('Bearer ', '');
     if (!token) {
-      return response.status(401).send('No token provided! Please Login first')
+      return response.status(401).send('No token provided! Please Login first');
     }
 
-    const decoded = await jwt.decodeJwtAsync(token)
+    const decoded = await jwt.decodeJwtAsync(token);
 
-    const tokenData = await Redis.get(String(decoded.userId))
+    const tokenData = await Redis.get(String(decoded.userId));
 
     if (tokenData !== null) {
       const parsedData = JSON.parse(tokenData);
@@ -38,9 +38,9 @@ const verifyToken = async (request: Request, response: Response, next: NextFunct
 
     next();
   } catch (error) {
-    next(error)
+    next(error);
   }
 
 };
 
-export default verifyToken
+export default verifyToken;

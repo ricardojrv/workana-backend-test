@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import authService from './authService'
+import authService from './authService';
 
 const signIn = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
@@ -23,7 +23,9 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 
 const logout = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await authService.logout();
+    const { userId, token, tokenExp } = req;
+
+    await authService.logout({ userId, token, tokenExp });
     res.send('Logged out successfully');
   } catch (error) {
     next(error);

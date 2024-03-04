@@ -1,12 +1,12 @@
-import { User } from './authModel';
-import { AppDataSource } from '../../db/dataSource';
+import prisma from '../../db/prisma';
 import { BadRequestError, UnauthorizedError } from '../../library/error/apiErrors';
 import bcrypt from 'bcrypt';
 import validator from 'validator';
 import jwt from '../../library/jwt/jwt';
 import validatePasswordStrength from '../../library/helpers/validatePassword';
+import { Request } from 'express';
+import parseBigInt from '../../library/helpers/parseJsonWithBigInt';
 
-const userRepository = AppDataSource.getRepository(User);
 
 const createUser = async (email: string, password: string) => {
   try {
@@ -27,43 +27,53 @@ const signIn = async (email: string, password: string): Promise<boolean> => {
     throw new BadRequestError(passwordErrorMessage);
   }
 
-  const dbUser = await userRepository.findOneBy({ email });
-  if (dbUser) {
-    throw new BadRequestError('User already exists.');
-  }
+  const unique = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
 
-  const userObj = await createUser(email, password)
+  if (unique) throw new BadRequestError('User already exists');
 
-  const user = userRepository.create(userObj)
+  const userObj = await createUser(email, password);
 
-  await userRepository.save(user);
+  await prisma.user.create({ data: { email: userObj.email, password: userObj.password } });
 
   return true;
 };
 
-const login = async (email: string, password: string) => {
+const login = async (email: string, password: string): Promise<{
+  token: string;
+}> => {
   if (!validator.isEmail(email) || !password) {
     throw new BadRequestError('Invalid email or password');
   }
 
-  const user = await userRepository.findOneBy({ email });
-  if (!user) {
+  const user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+  const parsedUser = parseBigInt(user);
+  if (!parsedUser) {
     throw new UnauthorizedError('Authentication failed');
   }
 
-  const passwordMatch = await bcrypt.compare(password, user.password);
+  const passwordMatch = await bcrypt.compare(password, parsedUser.password);
   if (!passwordMatch) {
     throw new UnauthorizedError('Authentication failed');
   }
 
-  const token = jwt.generateToken({ userId: user.Id });
+  const token = jwt.generateToken({ userId: (parsedUser.id) });
 
 
   return { token };
 };
 
-const logout = async () => {
-  // Logout logic, like clearing tokens or session data, would go here
+const logout = async ({ userId, token, tokenExp }: Partial<Request>) => {
+  console.log(userId, token, tokenExp);
+  await jwt.blacklistToken(userId, token, tokenExp);
+
   return true;
 };
 

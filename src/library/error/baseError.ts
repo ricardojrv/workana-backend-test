@@ -1,9 +1,11 @@
-import { HttpStatusCode } from "./apiErrors";
+import { HttpStatusCode } from './apiErrors';
 
 
 export class BaseError extends Error {
   public readonly name: string;
+
   public readonly httpCode: HttpStatusCode;
+
   public readonly isOperational: boolean;
 
   constructor(name: string, httpCode: HttpStatusCode, isOperational: boolean, description: string) {

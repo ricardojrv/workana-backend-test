@@ -1,62 +1,75 @@
-import { Product } from './productModel';
-import { Fabric } from '../fabric/fabricModel';
-import { AppDataSource } from '../../db/dataSource';
-import { BadRequestError } from '../../library/error/apiErrors';
-
-const productRepository = AppDataSource.getRepository(Product);
-const fabricRepository = AppDataSource.getRepository(Fabric);
-
-
-const validateProductData = (productData: Partial<Product>): string | null => {
-  if (!productData.description || productData.description.trim().length === 0) {
-    return 'Description is required';
-  }
-  if (productData.price <= 0) {
-    return 'Price must be greater than 0';
-  }
-  if (productData.existency < 0) {
-    return 'Existency must be non-negative';
-  }
-  return null;
-};
+import { Product } from '@prisma/client';
+import prisma from '../../db/prisma';
+import { BadRequestError, NotFoundError } from '../../library/error/apiErrors';
+import parseBigInt from '../../library/helpers/parseJsonWithBigInt';
+import validateProductData from '../../library/helpers/validateProductData';
 
 export const findAllProductsByFabId = async (IdFab: string) => {
   if (!IdFab) throw new BadRequestError('Invalid fabric id');
-  return await productRepository.find({
-    relations: {
-      fabric: true
-    },
+  const products = await prisma.product.findMany({
     where: {
-      fabric: {
-        IdFab: Number(IdFab)
-      }
-    }
-  })
+      fabricId: Number(IdFab),
+    },
+  });
+
+  const parsedproducts = products.map(parseBigInt);
+
+  return parsedproducts;
 };
 
-export const createProduct = async (productData: Partial<Product>) => {
+export const getProductById = async (id: string): Promise<Product> => {
+  if (!id) throw new BadRequestError('Invalid product id');
+
+  const product = await prisma.product.findUnique({
+    where: {
+      id: Number(id),
+    },
+  });
+
+  if (!product) throw new NotFoundError();
+
+
+  return parseBigInt(product);
+};
+
+export const createProduct = async (productData: Partial<Product>): Promise<Product> => {
+  const error = validateProductData(productData);
+  if (error) throw new BadRequestError(error);
+  const dbFabric = await prisma.fabric.findUnique({ where: { idFab: BigInt(productData.fabricId) } });
+  if (!dbFabric) throw new BadRequestError('wrong fabric id');
+
+  const product = await prisma.product.create({ data: { description: productData.description, price: productData.price, existency: productData.existency, fabricId: productData.fabricId } });
+
+  return parseBigInt(product);
+};
+
+export const updateProduct = async (id: string, productData: Partial<Product>): Promise<Product> => {
   const error = validateProductData(productData);
   if (error) throw new BadRequestError(error);
 
-  const dbFabric = await fabricRepository.find({ where: { IdFab: Number(productData.fabric) } })
-  if (!dbFabric.length) throw new BadRequestError("wrong fabric id");
-
-  const product = productRepository.create(productData);
-  return await productRepository.save(product);
-};
-
-export const updateProduct = async (id: string, productData: Partial<Product>) => {
-  const error = validateProductData(productData);
-  if (error) throw new BadRequestError(error);
-
-  await productRepository.update(id, productData);
   if (!id) throw new BadRequestError('Invalid product id');
 
-  return await productRepository.findOneBy({ Id: BigInt(id) });
+  const product = await prisma.product.update({
+    where: {
+      id: Number(id),
+    },
+    data: {
+      description: productData.description, price: productData.price, existency: productData.existency, fabricId: productData.fabricId,
+    },
+  });
+
+  return parseBigInt(product);
 };
 
-export const deleteProduct = async (id: string) => {
+export const deleteProduct = async (id: string): Promise<Product> => {
   if (!id) throw new BadRequestError('Invalid product id');
 
-  return await productRepository.delete(id);
+  const product = await prisma.product.findUnique({ where: { id: Number(id) } });
+  if (!product) throw new NotFoundError('Invalid product id');
+
+  return prisma.product.delete({
+    where: {
+      id: Number(id),
+    },
+  });
 };

@@ -1,27 +1,20 @@
-import winston from 'winston';
-import { format } from 'winston';
+import winston, { format } from 'winston';
 import { Logger } from '../../types/types';
 
 const customLevels = {
   levels: {
-    trace: 5,
     debug: 4,
     info: 3,
     warn: 2,
     error: 1,
-    fatal: 0,
   },
   colors: {
-    trace: 'white',
     debug: 'green',
     info: 'green',
     warn: 'yellow',
     error: 'red',
-    fatal: 'red',
   },
 };
-
-const isDevEnvironment = (): boolean => process.env.NODE_ENV === 'development';
 
 const formatter = format.combine(
   format.colorize(),
@@ -30,21 +23,18 @@ const formatter = format.combine(
   format.printf((info) => {
     const { timestamp, level, message, meta } = info;
 
-    return `${timestamp} [${level}]: ${message} ${meta ? JSON.stringify(meta) : ''
-      }`;
+    return `${timestamp} [${level}]: ${message} ${meta ? JSON.stringify(meta) : ''}`;
   }),
 );
 
 
 const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
-  format: formatter
+  format: formatter,
 });
 
 winston.addColors(customLevels.colors);
 
-
-const trace = (msg: string, meta?: any) => logger.log('trace', msg, meta);
 
 const debug = (msg: string, meta?: any) => logger.debug(msg, meta);
 
@@ -54,6 +44,4 @@ const warn = (msg: string, meta?: any) => logger.warn(msg, meta);
 
 const error = (msg: string, meta?: any) => logger.error(msg, meta);
 
-const fatal = (msg: string, meta?: any) => logger.log('fatal', msg, meta);
-
-export default { trace, debug, info, warn, error, fatal } as Logger;
+export default { debug, info, warn, error } as Logger;

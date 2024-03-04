@@ -1,5 +1,5 @@
 
-import { BaseError } from "./baseError";
+import { BaseError } from './baseError';
 export enum HttpStatusCode {
   OK = 200,
   BAD_REQUEST = 400,

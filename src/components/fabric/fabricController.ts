@@ -15,7 +15,6 @@ export const fetchFabric = async (req: Request, res: Response, next: NextFunctio
 
 export const createFabric = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log(req.body);
     const newFabric = await service.createFabric(req.body);
     res.status(201).json(newFabric);
   } catch (error) {
